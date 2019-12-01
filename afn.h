@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -31,7 +32,7 @@ typedef struct
     vector<char> alphabet;//alfabeto
     string ini; //estado inicial
     vector<string> fin; // estados finais
-    vector<trans> transitions;// transicoes
+    vector<trans> t;// transicoes
 }af;
 
 
@@ -91,7 +92,7 @@ void setTrans(af &a, string line)
     t.letter =  letter[0];
     t.out = qnext;
 
-    a.transitions.push_back(t);
+    a.t.push_back(t);
 }
 af readAuto(string fileName)
 {
@@ -160,6 +161,87 @@ af readAuto(string fileName)
     return a;
 }
 
+af afdForm(af afn)
+{
+    //Funcao que transforma um afn em afd
+    //
 
-af autoMin(af);
+    af afd;
+
+    string current = afn.t[0].in; //estado atual da transicao, como esta ordenado
+                                  //podemos apenas verificar quando muda esse estado
+
+    cout << afn.ini;
+    af afd.t.push_back(afn.ini);
+
+    for(uint i = 0; i < afn.states.size(); i++)
+    {
+        for(uint j = 0; j < afn.alphabet.size();i ++)
+        {
+
+
+        }
+    }
+
+}
+
+af autoMin(af afn)
+{
+
+}
+
+
+
+bool sortbyTrans(trans a, trans b)
+{
+    return a.in < b.in;
+}
+
+void genGr(af afd)
+{
+    cout << "G = ({"; // nome da gramatica 
+
+    for(uint i = 0; i < afd.states.size(); i++)
+    {
+        cout << afd.states[i];// Demais Variaveis
+
+        if(i != afd.states.size() - 1)
+        {
+           cout <<  ","; // Nao poe virgula no ultimo
+        }
+    }
+
+    cout << "},{";
+
+    for(uint i = 0; i < afd.alphabet.size(); i++)
+    {
+        cout << afd.alphabet[i];
+
+        if(i != afd.alphabet.size() - 1)
+        {
+            cout  << ",";
+        }
+    }
+
+    cout << "},";
+
+    cout << afd.ini << "," << "P)\n";
+
+    cout << "P\n";
+
+
+
+    string prod = afd.t[0].in;
+
+    for(uint i = 0; i < afd.t.size(); i++)
+    {
+            cout << afd.t[i].in << " -> ";
+            cout << afd.t[i].letter;
+            cout << " " <<  afd.t[i].out << endl;
+    }
+
+
+}
+
+
 

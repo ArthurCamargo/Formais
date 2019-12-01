@@ -3,6 +3,9 @@
 
 int main ()
 {
-    readAuto("test.afn");
+    af myAuto;
+    sort(afd.t.begin(), afd.t.end(), sortbyTrans);
+    myAuto = readAuto("test.afn");
+    genGr(myAuto);
     return 0;
 }
