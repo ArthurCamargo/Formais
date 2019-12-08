@@ -40,7 +40,7 @@ def read_nome(line):
 def read_initial(line):
     """retorna o estado inicial dado uma linha"""
     initial = line.split('}')[2]
-    initial = line.split(',')[1]
+    initial = initial.split(',')[1]
 
     return initial
 
@@ -72,19 +72,17 @@ def read_trans(lines):
 
     return transicoes
 
-def embed_transitions(estados, transicao):
+def embed_transitions(estado, transicoes):
     """
     Dado uma lista de estados, cria um State e o retorna,
     com suas devidas transicoes
     """
-
-    t_func = transicao[0][1], transicao[1] #funcao de transicao
-
-    for estado in estados:
-        if estado == transicao[0][0]:
-            estado = State(estado, t_func)
-            return estado
-    return -1
+    t_func = []
+    for trans in transicoes:
+        if trans[0][0] == estado:
+            t_func.append((trans[0][1], trans[1])) #funcao de transicao
+            estados = State(estado, t_func)
+    return estados
 
 def mark_ini(estados, inicial):
     """
@@ -105,8 +103,6 @@ def mark_fin(estados, finals):
             if estado.nome == final:
                 estado.is_final = True
 
-
-
 def read_file(file_name):
     """
     Le um arquivo que possui a descricao de um automato
@@ -123,14 +119,13 @@ def read_file(file_name):
         transicoes = read_trans(lines.split()[2:])
 
     estados = []
-    for trans in transicoes:
-        estados.append(embed_transitions(estados_nomes, trans))
+    for estado in estados_nomes:
+        estados.append(embed_transitions(estado, transicoes))
 
     mark_ini(estados, initial)
     mark_fin(estados, finals)
 
-    myafn = Afn(name, alfabeto, estados)
+    myafn = Afn(name, alfabeto, estados, initial)
 
-    print(myafn)
 
     return myafn

@@ -33,8 +33,20 @@ class State:
 
     def __repr__(self):
         return str(self)
+
     def __doc__(self):
         return self.__class__.__doc__
+
+    def peak(self, letter):
+        """
+        Se a letra do input for igual a da transicao retorna a transicao
+        caso contrario retorna None
+        """
+        state_name = []
+        for trans in self.next_state:
+            if letter == trans[0]:
+                state_name.append(trans[1])
+        return state_name
 
 class Af:
     """Classe basica de um de um automato finito."""
