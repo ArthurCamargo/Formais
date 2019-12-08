@@ -31,6 +31,8 @@ class State:
 
         return string
 
+    def __repr__(self):
+        return str(self)
     def __doc__(self):
         return self.__class__.__doc__
 
@@ -57,7 +59,8 @@ class Af:
         self.nome = nome
 
     def __str__(self):
-        string = self.nome + nl + self.alfabeto + nl + self.estados + nl
+        n_l = "\n"
+        string = self.nome + n_l + self.alfabeto + n_l + self.estados + n_l
         return string
 
     def __doc__(self):

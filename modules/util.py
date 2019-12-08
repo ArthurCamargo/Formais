@@ -91,8 +91,9 @@ def mark_ini(estados, inicial):
     Dado uma lista de States e o estado inicial,
     marca o estado inicial
     """
-    pos = estados.find(inicial)
-    estados[pos].is_inicial = True
+    for estado in estados:
+        if estado.nome == inicial:
+            estado.is_inicial = True
 
 def mark_fin(estados, finals):
     """
@@ -100,8 +101,11 @@ def mark_fin(estados, finals):
     marca os estados finais
     """
     for final in finals:
-        pos = estados.find(final)
-        estados[pos].is_final = True
+        for estado in estados:
+            if estado.nome == final:
+                estado.is_final = True
+
+
 
 def read_file(file_name):
     """
@@ -118,15 +122,13 @@ def read_file(file_name):
         finals = read_final(lines)
         transicoes = read_trans(lines.split()[2:])
 
-
     estados = []
     for trans in transicoes:
         estados.append(embed_transitions(estados_nomes, trans))
 
-    #mark_ini(estados, initial)
-    #mark_fin(estados, finals)
+    mark_ini(estados, initial)
+    mark_fin(estados, finals)
 
-    print(estados[1])
     myafn = Afn(name, alfabeto, estados)
 
     print(myafn)
