@@ -17,6 +17,9 @@ class State:
         self.is_final = is_final
         self.next_state = next_state
 
+    def add_trans(self, trans):
+        """ Dado uma transicao adiciona a este estado """
+        self.next_state.append(trans)
     def __str__(self):
         traco = " -- "
         ini = "[O]"

@@ -77,6 +77,7 @@ def embed_transitions(estado, transicoes):
     Dado uma lista de estados, cria um State e o retorna,
     com suas devidas transicoes
     """
+    estados = State()
     t_func = []
     for trans in transicoes:
         if trans[0][0] == estado:

@@ -9,7 +9,9 @@ class Afd(Af):
         Af.__init__(self, nome, alfabeto, estados)
 
     def __str__(self):
-        return Af.__str__
+        n_l = "\n"
+        string = self.nome + n_l + str(self.alfabeto) + n_l + str(self.estados)
+        return string
 
     def __doc__(self):
         return self.__class__.__doc__
