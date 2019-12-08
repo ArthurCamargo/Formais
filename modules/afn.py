@@ -6,11 +6,11 @@ from af import Af
 
 class Afn(Af):
     """ Um automato finito não determinístico. """
-    def __init__(self, nome=None, alfabeto=None, estados=None, transicoes=None):
+    def __init__(self, nome=None, alfabeto=None, estados=None):
         Af.__init__(self, nome, alfabeto, estados)
-        self.transicoes = transicoes
     def __str__(self):
-        string = self.nome + '\n' + str(self.alfabeto) + "\n" + str(self.estados) + '\n'+ str(self.transicoes)
+        nl = "\n"
+        string = self.nome + nl + str(self.alfabeto) + nl + str(self.estados) + nl
         return string
     def __doc__(self):
         return self.__class__.__doc__

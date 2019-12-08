@@ -9,5 +9,4 @@ from afd import Afd
 from afn import Afn
 
 #Cria uma afn
-MYAFN = Afn(None, None, None, None)
 read_file('../tests/tests.afn')

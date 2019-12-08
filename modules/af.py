@@ -4,7 +4,7 @@ class State:
     """
     Um State e um estado que possui:
     """
-    def __init__(self, nome, is_inicial, is_final):
+    def __init__(self, nome='', next_state=None, is_inicial=False, is_final=False):
         """
         Construtor de um State, onde:
         - nome uma string
@@ -13,11 +13,23 @@ class State:
         """
 
         self.nome = nome
-        self.is_inicial = is_inicial 
+        self.is_inicial = is_inicial
         self.is_final = is_final
+        self.next_state = next_state
 
     def __str__(self):
-        return self.__class__.__name__
+        traco = " -- "
+        ini = "[O]"
+        final = "[X]"
+        string = self.nome + traco + str(self.next_state)
+
+        if self.is_inicial:
+            string += ini
+
+        if self.is_final:
+            string += final
+
+        return string
 
     def __doc__(self):
         return self.__class__.__doc__
@@ -45,7 +57,8 @@ class Af:
         self.nome = nome
 
     def __str__(self):
-        return self.__class__.__name__
+        string = self.nome + nl + self.alfabeto + nl + self.estados + nl
+        return string
 
     def __doc__(self):
         return self.__class__.__doc__
