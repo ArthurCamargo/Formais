@@ -7,7 +7,7 @@ from states import MultiState
 
 class Af():
     """ Um automato finito """
-    def __init__(self, nome=None, alfabeto=None, estados=None, current=None):
+    def __init__(self, nome=None, alfabeto=None, estados=None, initial=None):
         self.alfabeto = alfabeto
 
         if estados is None:
@@ -17,11 +17,11 @@ class Af():
 
         self.nome = nome
 
-        self.current = current
+        self.initial = initial
 
         for estado in self.estados:
-            if estado.nome == current:
-                self.current = estado
+            if estado.nome == initial:
+                estado.is_initial = True
 
     def __str__(self):
         n_l = "\n"
@@ -44,7 +44,6 @@ class Af():
         return None
 
     def get_trans(self, current, letter):
-
         transitions = []
 
         for estado in current.estados:
@@ -61,7 +60,7 @@ class Af():
         Algoritmo que transforma a afn em uma afd
         """
 
-        stack = [MultiState([self.current.nome])]
+        stack = [MultiState([self.initial])]
         novos_estados = {}
 
         while stack:
@@ -84,7 +83,6 @@ class Af():
         for value in novos_estados:
             for estado in novos_estados[value].estados:
                 if self.state(estado).is_final:
-                    print(novos_estados[value])
                     novos_estados[value].is_final = True
 
 
@@ -92,4 +90,45 @@ class Af():
         for value in novos_estados:
             estados.append(novos_estados[value].get_state())
 
-        return Af(self.nome, self.alfabeto, estados, self.current)
+        return Af(self.nome, self.alfabeto, estados, self.initial)
+
+    def print_grammar(self):
+        new_line = "\n"
+        flecha = " -> "
+        string = "G = ({"
+        for i in range(len(self.estados)):
+            variavel_num = ord('A')
+            variavel_num += i
+            string += (chr(variavel_num))
+            if i != len(self.estados) - 1:
+                string += ", "
+        string += "},{"
+        for i in range(len(self.alfabeto)):
+            variavel_num = ord('a')
+            variavel_num += i
+            string += (chr(variavel_num))
+            if i != len(self.alfabeto) - 1:
+                string += ", "
+        string += "}, S, P)" + new_line
+        string += "P"  + new_line
+
+        dici = {}
+        i = 0
+        for estado in self.estados:
+            dici[estado.nome] = chr(ord('A') + i)
+            i += 1
+
+
+        for estado in self.estados:
+            if estado.next_state is not None:
+                for prod in estado.next_state:
+                    string += dici[estado.nome] + flecha
+                    string += prod[0] + " "
+                    string += dici[prod[1]] + new_line
+            if estado.is_final:
+                string += dici[estado.nome] + flecha + new_line
+        print(string)
+    def 
+
+
+

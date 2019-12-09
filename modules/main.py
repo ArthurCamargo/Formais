@@ -8,7 +8,7 @@ from af import Af
 
 #Cria uma afn
 MYAFN = read_file('../tests/test1.afn')
-print(MYAFN.transform_afd())
+MYAFN.print_grammar()
 #print(MYAFD)
 #print(MYAFN.transform_afd())
 #MYAFN.transform_afd()
