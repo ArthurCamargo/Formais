@@ -55,6 +55,14 @@ class Af():
 
         return list(set(transitions))
 
+    def next(self, estado, letter):
+        if estado.next_state is not None:
+            for prod in estado.next_state:
+                if prod[0] == letter:
+                    return prod[1]
+
+        return None
+
     def transform_afd(self):
         """
         Algoritmo que transforma a afn em uma afd
@@ -82,8 +90,9 @@ class Af():
 
         for value in novos_estados:
             for estado in novos_estados[value].estados:
-                if self.state(estado).is_final:
-                    novos_estados[value].is_final = True
+                if self.state(estado) is not None:
+                    if self.state(estado).is_final:
+                        novos_estados[value].is_final = True
 
 
         estados = []
@@ -128,7 +137,104 @@ class Af():
             if estado.is_final:
                 string += dici[estado.nome] + flecha + new_line
         print(string)
-    def 
+
+    def remove_useless(self):
+
+        some_use = set()
+        for estado in self.estados:
+            if estado.next_state is not None:
+                for prod in estado.next_state:
+                    some_use.add(prod[1])
+
+        for estado in self.estados:
+            if estado.nome not in some_use:
+                self.estados.remove(estado)
+
+    def totalize(self):
+        nome = 'q1'
+        for estado in self.estados:
+            if nome == estado.nome:
+                nome = 'q' + chr(ord(nome[1]) + 1)
+
+        trans = []
+        for letter in self.alfabeto:
+            trans.append((letter, nome))
+
+        estado_bolha = State(nome, trans)
+
+        useful = False
+
+        for estado in self.estados:
+            for letter in self.alfabeto:
+
+                if self.next(estado, letter) is None:
+
+                    useful = True
+                    if estado.next_state is not None:
+                        estado.next_state.append((letter, nome))
+                    else:
+                        estado.next_state = [((letter, nome))]
+
+        if useful:
+            self.estados.append(estado_bolha)
+
+    def aceita(self, palavra):
+        current = self.initial
+        for letra in palavra:
+            current = self.state(next(current, letra))
+            if current is None:
+                return False
+
+        return current.is_final
 
 
+    def mark(self, marked, current, depend_on):
+        if not depend_on:
+            return marked
+        else:
+            for cur in current:
+                marked[cur] = True
+                cur = depend_on[cur]
+                marked = self.mark(marked, cur, depend_on)
+        return marked
 
+    def minimize(self):
+        afd = self.transform_afd()
+        afd.remove_useless()
+        afd.totalize()
+
+        is_marked = {}
+        for i in afd.estados:
+            for j in afd.estados:
+                if i != j:
+                    conj = set()
+                    conj.add(i)
+                    conj.add(j)
+                    depend_on = {conj:[]}
+                    is_marked.update({conj:False})
+
+                    #xor
+                    if i.is_final != j.is_final:
+                        is_marked[conj] = True
+
+                    if is_marked[conj] is False:
+                        for letter in afd.alfabeto:
+
+                            next_1 = afd.next(i, letter)
+                            next_2 = afd.next(j, letter)
+
+                            state_1 = self.state(next_1)
+                            state_2 = self.state(next_2)
+
+                            conj_next = set()
+                            conj_next.add(state_1)
+                            conj_next.add(state_2)
+
+                            if conj_next in depend_on:
+                                depend_on[conj_next].append(conj)
+                            else:
+                                depend_on.update({conj_next:conj})
+                    else:
+                        is_marked = afd.mark(is_marked, [conj], depend_on)
+                    print(is_marked)
+        print(is_marked)
