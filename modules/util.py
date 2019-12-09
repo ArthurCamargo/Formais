@@ -4,8 +4,8 @@ Arquivo com funcoes utilitarias com proposito mais generico:
 
 """
 
-from afn import Afn
-from af import State
+from af import Af
+from states import State
 
 
 def read_estados(line):
@@ -77,7 +77,7 @@ def embed_transitions(estado, transicoes):
     Dado uma lista de estados, cria um State e o retorna,
     com suas devidas transicoes
     """
-    estados = State()
+    estados = State(estado)
     t_func = []
     for trans in transicoes:
         if trans[0][0] == estado:
@@ -126,7 +126,7 @@ def read_file(file_name):
     mark_ini(estados, initial)
     mark_fin(estados, finals)
 
-    myafn = Afn(name, alfabeto, estados, initial)
+    myafn = Af(name, alfabeto, estados, initial)
 
 
     return myafn

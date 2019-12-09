@@ -1,69 +1,13 @@
-"""File with the definitions of an AF."""
 
-class State:
-    """
-    Um State e um estado que possui:
-    """
-    def __init__(self, nome='', next_state=None, is_inicial=False, is_final=False):
-        """
-        Construtor de um State, onde:
-        - nome uma string
-        - is_inicial um bool
-        - is_final um bool
-        """
+"""
+    File with the definition of an AFN.
+"""
+from states import State
+from states import MultiState
 
-        self.nome = nome
-        self.is_inicial = is_inicial
-        self.is_final = is_final
-        self.next_state = next_state
-
-    def add_trans(self, trans):
-        """ Dado uma transicao adiciona a este estado """
-        self.next_state.append(trans)
-    def __str__(self):
-        traco = " -- "
-        ini = "[O]"
-        final = "[X]"
-        string = self.nome + traco + str(self.next_state)
-
-        if self.is_inicial:
-            string += ini
-
-        if self.is_final:
-            string += final
-
-        return string
-
-    def __repr__(self):
-        return str(self)
-
-    def __doc__(self):
-        return self.__class__.__doc__
-
-    def peak(self, letter):
-        """
-        Se a letra do input for igual a da transicao retorna a transicao
-        caso contrario retorna None
-        """
-        state_name = []
-        for trans in self.next_state:
-            if letter == trans[0]:
-                state_name.append(trans[1])
-        return state_name
-
-class Af:
-    """Classe basica de um de um automato finito."""
-    def __init__(self, nome='', alfabeto=None, estados=None):
-        """
-        Construtor de um afd, onde:
-
-        - alfabeto e uma lista de string
-        - estados eh um State
-        - nome eh uma string.
-
-        e Retorna um AF
-
-        """
+class Af():
+    """ Um automato finito """
+    def __init__(self, nome=None, alfabeto=None, estados=None, current=None):
         self.alfabeto = alfabeto
 
         if estados is None:
@@ -73,10 +17,79 @@ class Af:
 
         self.nome = nome
 
+        self.current = current
+
+        for estado in self.estados:
+            if estado.nome == current:
+                self.current = estado
+
     def __str__(self):
         n_l = "\n"
-        string = self.nome + n_l + self.alfabeto + n_l + self.estados + n_l
+        string = self.nome + n_l + str(self.alfabeto) + n_l + str(self.estados)
         return string
+
+    def __repr__(self):
+        return str(self)
 
     def __doc__(self):
         return self.__class__.__doc__
+
+    def state(self, estado_nome):
+        """
+        Retorna um State presente no automato dado um nome de estado
+        """
+        for estado in self.estados:
+            if estado.nome == estado_nome:
+                return estado
+        return None
+
+    def get_trans(self, current, letter):
+
+        transitions = []
+
+        for estado in current.estados:
+            state = self.state(estado)
+            if state is not None and state.next_state is not None:
+                for trans in state.next_state:
+                    if trans[0] == letter:
+                        transitions.append(trans[1])
+
+        return list(set(transitions))
+
+    def transform_afd(self):
+        """
+        Algoritmo que transforma a afn em uma afd
+        """
+
+        stack = [MultiState([self.current.nome])]
+        novos_estados = {}
+
+        while stack:
+
+            current = stack.pop()
+
+            for letter in self.alfabeto:
+                trans = self.get_trans(current, letter)
+                if not trans:
+                    continue
+
+                aux = MultiState(trans)
+                current.next_state.append((letter, aux.nome))
+
+                if aux.nome not in novos_estados:
+                    stack.append(aux)
+
+            novos_estados[current.nome] = current
+
+        for value in novos_estados:
+            for estado in novos_estados[value].estados:
+                if self.state(estado).is_final:
+                    print(novos_estados[value])
+                    novos_estados[value].is_final = True
+
+
+        estados = []
+        for value in novos_estados:
+            estados.append(novos_estados[value].get_state())
+
+        return Af(self.nome, self.alfabeto, estados, self.current)
